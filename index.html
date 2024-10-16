@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +11,34 @@
         }
 
         .widget {
-            padding: 5px 5px;
-            color: #000000;
+            padding: 10px; /* Aumentei o padding para criar uma moldura simétrica */
+            color: #000000; /* Cor padrão */
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             max-width: 95%;
             margin: auto;
-            border: 3px solid #000000;
-            border-radius: 5px;
-            box-shadow: 2px 2px 1px 0px #000000;
+            border: 3px solid #000000; /* Borda padrão */
+            border-radius: 10px; /* Borda arredondada */
+            box-shadow: 2px 2px 1px 0px #000000; /* Sombra da borda */
+        }
+
+        /* Cores para temas claros e escuros */
+        @media (prefers-color-scheme: dark) {
+            .widget {
+                color: #ffffff; /* Cor da fonte em tema escuro */
+                border-color: #ffffff; /* Cor da borda em tema escuro */
+                background-color: #333333; /* Fundo do widget em tema escuro */
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .widget {
+                color: #000000; /* Cor da fonte em tema claro */
+                border-color: #000000; /* Cor da borda em tema claro */
+                background-color: #ffffff; /* Fundo do widget em tema claro */
+            }
         }
 
         .greet {
@@ -66,71 +83,62 @@
 </div>
 
 <script>
-    function exibirSaudacoes(today) {
-        hrs = today.getHours();
-        nome = "";
-        if (hrs < 12)
-            greet = 'Bom Dia ' + nome;
-        else if (hrs >= 12 && hrs <= 17)
-            greet = 'Boa Tarde ' + nome;
-        else if (hrs >= 17 && hrs <= 24)
-            greet = 'Boa Noite ' + nome;
-        document.getElementById('greet').innerHTML = greet;
+function exibirSaudacoes(today) {
+    let hrs = today.getHours();
+    let nome = ""; // Trader
+    let saudacao = "";
+    if (hrs < 12)
+        saudacao = 'Bom Dia  ' + nome;
+    else if (hrs >= 12 && hrs <= 17)
+        saudacao = 'Boa Tarde ' + nome;
+    else if (hrs >= 17 && hrs <= 24)
+        saudacao = 'Boa Noite  ' + nome;
+    document.getElementById('greet').innerHTML = saudacao;
+}
+
+function exibirData(today) {
+    const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const nomesMeses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    var diaNome = dias[today.getDay()];
+    var mesNome = nomesMeses[today.getMonth()];
+    var dia = today.getDate();
+    var ano = today.getFullYear();
+    document.getElementById('date').innerHTML = diaNome + ", " + mesNome + " " + dia + " " + ano;
+}
+
+function exibirRelogio(today) {
+    var hora = adicionarZeros(converterPara12h(today.getHours()));
+    var minutos = adicionarZeros(today.getMinutes());
+    var segundos = adicionarZeros(today.getSeconds());
+    segundos += today.getHours() >= 12 ? " pm" : " am";
+    document.getElementById('hour').innerHTML = hora;
+    document.getElementById('min').innerHTML = minutos;
+    document.getElementById('sec').innerHTML = segundos;
+}
+
+function converterPara12h(hora) {
+    if (hora > 12) {
+        return hora - 12;
+    } else if (hora === 0) {
+        return 12;
+    } else {
+        return hora;
     }
+}
 
-    function exibirData(today) {
-        const dias = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-        const nomesMes = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+function adicionarZeros(num) {
+    return num < 10 ? '0' + num : num;
+}
 
-        var nomeDia = dias[today.getDay()];
-        var nomeMes = nomesMes[today.getMonth()];
-        var data = today.getDate();
-        var ano = today.getFullYear();
-        document.getElementById('date').innerHTML = nomeDia + ", " + nomeMes + " " + data + " " + ano;
-    }
+function exibirWidget() {
+    var hoje = new Date();
+    exibirSaudacoes(hoje);
+    exibirData(hoje);
+    exibirRelogio(hoje);
+    setTimeout(exibirWidget, 500);
+}
 
-    function exibirRelogio(today) {
-        var hora = adicionarZeros(horaDe12(today.getHours()));
-        var minutos = adicionarZeros(today.getMinutes());
-        var segundos = adicionarZeros(today.getSeconds());
-
-        if (today.getHours() >= 12) {
-            segundos += " pm";
-        } else {
-            segundos += " am";
-        }
-
-        document.getElementById('hour').innerHTML = hora;
-        document.getElementById('min').innerHTML = minutos;
-        document.getElementById('sec').innerHTML = segundos;
-    }
-
-    function horaDe12(hour) {
-        if (hour > 12) {
-            return hour -= 12;
-        } else if (hour === 0) {
-            return hour = 12;
-        } else {
-            return hour;
-        }
-    }
-
-    function adicionarZeros(num) {
-        if (num < 10) {
-            num = '0' + num;
-        }
-        return num;
-    }
-
-    function exibirWidget() {
-        var today = new Date();
-        exibirSaudacoes(today);
-        exibirData(today);
-        exibirRelogio(today);
-        setTimeout(exibirWidget, 500);
-    }
-
-    exibirWidget();
+exibirWidget();
 </script>
 
 </body>
